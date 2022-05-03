@@ -50,7 +50,6 @@ results = {
 total = 0
 submission_data = {}
 
-print(f"Evaluating {args.split} split with {len(data)} books...")
 
 for book_title, book_data in data.items():
     # quick evaluation of only the first book
@@ -121,10 +120,10 @@ for book_title, book_data in data.items():
             else:
                 gold_rank = sorted_score_idx[qnum].tolist().index(gold_answer) + 1
                 ranks.append(gold_rank)
-                if args.cache_scores:
+                '''if args.cache_scores:
                     quote.extend([gold_rank, sorted_score_idx[qnum].cpu().tolist(), sorted_score_vals[qnum].cpu().tolist()])
-                else:
-                    quote.extend([gold_rank, sorted_score_idx[qnum].cpu().tolist(), None])
+                else:'''
+                quote.extend([gold_rank, sorted_score_idx[qnum].cpu().tolist(), None])
 
         results[ns]["mean_rank"].extend(ranks)
         results[ns]["recall@1"].extend([x <= 1 for x in ranks])
@@ -136,10 +135,14 @@ for book_title, book_data in data.items():
         num_cands = len(book_data["candidates"][f"{ns}_sentence"])
         results[ns]["num_candidates"].extend([num_cands for _ in ranks])
 
-print_results(results)
-
-print("Submission Data")
+print(results)
 print(submission_data)
+
+#print_results(results)
+
+print("Single evaluation Data")
+with open(f"{args.output_dir}/single_evaluation_results.json", "w") as f:
+    f.write(json.dumps(submission_data))
 
 '''
 
